@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="google" content="notranslate">
+<meta name="color-scheme" content="light dark">
+<title>Gram Vanity · смена ключа</title>
+<style>
+@font-face{font-family:Onest;font-weight:400;src:url(/fonts/onest-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:Onest;font-weight:400;src:url(/fonts/onest-cyrillic-400-normal.woff2) format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:Onest;font-weight:600;src:url(/fonts/onest-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:Onest;font-weight:600;src:url(/fonts/onest-cyrillic-600-normal.woff2) format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:Onest;font-weight:700;src:url(/fonts/onest-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:Onest;font-weight:700;src:url(/fonts/onest-cyrillic-700-normal.woff2) format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:"JetBrains Mono";font-weight:500;src:url(/fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"JetBrains Mono";font-weight:700;src:url(/fonts/jetbrains-mono-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F}
+:root{
+  --paper:#eceef1;--card:#fff;--card-2:#f5f6f8;--ink:#121418;--ink-2:#565c66;--ink-3:#8d939d;--line:#e1e4e8;--line-2:#cbcfd5;
+  --signal:#2b6cf6;--signal-2:#1f5de0;--signal-ink:#fff;--warn-soft:rgba(255,166,0,.15);
+  --focus:#2b6cf6;--ok:#16875a;--ok-soft:rgba(22,135,90,.1);--bad:#d43838;--bad-soft:rgba(212,56,56,.09);--warn-ink:#7a5500;
+  --shadow:0 1px 0 rgba(18,20,24,.03),0 14px 36px -22px rgba(18,20,24,.28);
+  --sans:Onest,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0d0f12;--card:#16191e;--card-2:#1d2026;--ink:#f1f2f4;--ink-2:#a2a8b2;--ink-3:#6c727c;--line:#252930;--line-2:#343942;
+  --signal:#3b7bff;--signal-2:#2b66e8;--ok:#3ccb86;--ok-soft:rgba(60,203,134,.12);--bad:#ff6b6b;--bad-soft:rgba(255,107,107,.12);--warn-ink:#ffd36b;--shadow:none;
+}}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{min-height:100dvh;font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:8px}
+main{max-width:560px;margin:0 auto;padding:0 20px calc(40px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:8px;padding:20px 0 0;font:600 16px/1 var(--sans);letter-spacing:-.01em}
+.logo{display:block;width:22px;height:22px;filter:drop-shadow(0 2px 5px rgba(43,108,246,.4))}
+.hero{margin:36px 0 22px}
+h1{margin:0;font:700 clamp(32px,6vw,44px)/1.04 var(--sans);letter-spacing:-.045em}
+.lead{max-width:46ch;margin:14px 0 0;color:var(--ink-2);font-size:16px;text-wrap:pretty}
+.card{padding:8px 20px;border-radius:26px;background:var(--card);box-shadow:var(--shadow),inset 0 0 0 1px var(--line)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:13px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.k{flex:none;color:var(--ink-2);font-size:15px}
+.v{min-width:0;font:500 13.5px/1.5 var(--mono);word-break:break-all;text-align:right}
+#addr{font-weight:700}
+#amount,#phase{font:600 15px/1.5 var(--sans)}
+.v b{padding:2px 8px;border-radius:999px;background:var(--signal);color:var(--signal-ink);font-weight:600}
+#tc{display:flex;justify-content:center;margin:22px 0 4px;min-height:44px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:56px;margin-top:14px;border:0;border-radius:18px;background:var(--signal);color:var(--signal-ink);font:600 17px/1 var(--sans);cursor:pointer;box-shadow:0 10px 24px -14px rgba(43,108,246,.9),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .15s ease-out,opacity .2s}
+.btn:not(:disabled):active{transform:scale(.985);transition:none}
+.btn:disabled{opacity:.45;cursor:default}
+.alert{margin-top:12px;padding:12px 14px;border-radius:14px;font:500 14.5px/1.45 var(--sans)}
+.red{background:var(--bad-soft);color:var(--bad)}
+.mint{background:var(--ok-soft);color:var(--ok)}
+.sun{background:var(--warn-soft);color:var(--warn-ink)}
+.note{margin:14px 2px 0;color:var(--ink-3);font-size:14px;line-height:1.45;text-wrap:pretty}
+.spin{width:18px;height:18px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+[hidden]{display:none!important}
+@media (max-width:560px){main{padding:0 14px}.card{padding:6px 16px;border-radius:22px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><img class="logo" src="data:image/webp;base64,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" width="22" height="22" alt="" aria-hidden="true">Gram Vanity</div>
+  <div class="hero">
+    <h1>Смена ключа</h1>
+    <p class="lead">Одна транзакция: пополнить адрес, развернуть, поставить ваш ключ.</p>
+  </div>
+  <div class="card">
+    <div class="row"><span class="k">Адрес</span><span class="v" id="addr">…</span></div>
+    <div class="row"><span class="k">Сумма</span><span class="v" id="amount">…</span></div>
+    <div class="row"><span class="k">Новый ключ</span><span class="v" id="key">…</span></div>
+    <div class="row"><span class="k">Статус</span><span class="v" id="phase">проверяю…</span></div>
+  </div>
+  <div id="tc"></div>
+  <button class="btn" id="send" disabled>Отправить</button>
+  <div id="msg"></div>
+  <p class="note">Страница не знает ваших слов. Остаток суммы останется на новом адресе.</p>
+</main>
+<script src="/vendor/tonconnect-ui.min.js"></script>
+<script>
+"use strict";
+const MANIFEST_URL = __MANIFEST_URL__;
+// Move the deploy token out of the URL: TON Connect can put location.href into wallet links.
+const q = new URLSearchParams(location.hash.slice(1) || (() => { try { return sessionStorage.getItem("vl-deploy") || ""; } catch (e) { return ""; } })());
+if (location.hash) {
+  try { sessionStorage.setItem("vl-deploy", location.hash.slice(1)); } catch (e) {}
+  history.replaceState(null, "", "/deploy");
+}
+const id = q.get("s") || "", dtoken = q.get("d") || "";
+const $ = x => document.getElementById(x);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const msg = (cls, text) => { $("msg").innerHTML = text ? `<div class="alert ${cls}">${esc(text)}</div>` : ""; };
+const api = async path => {
+  const r = await fetch("/api/deploy/" + path, {method: "POST", headers: {"X-Deploy-Token": dtoken, "Content-Type": "application/json"},
+    body: JSON.stringify({id}), cache: "no-store", credentials: "omit"});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || "HTTP " + r.status);
+  return j;
+};
+
+let phase = "", sending = false, ui = null;
+async function refresh() {
+  try {
+    const s = await api("state");
+    $("addr").textContent = s.address.replace(/(.{4})(?=.)/g, "$1 ");
+    if (s.network_error) { $("phase").textContent = "нет связи с toncenter"; return; }
+    phase = s.phase;
+    const bal = (Number(s.balance) / 1e9).toLocaleString("ru-RU", {maximumFractionDigits: 4});
+    $("phase").innerHTML = {
+      ready: `не развёрнут · ${bal} GRAM`, deployed_anchor: `развёрнут, ключ ещё не ваш · ${bal} GRAM`,
+      done: `<b>ключ сменён</b> · ${bal} GRAM`, foreign: "ключ чужой",
+    }[phase] || esc(phase);
+    if (phase === "done") { msg("mint", "Готово. Импортируйте 24 слова в Telegram Wallet (Money)."); sending = false; }
+    if (phase === "foreign") msg("red", "Ключ уже сменён на другой. Отправка заблокирована.");
+    update();
+  } catch (e) { msg("red", e.message); }
+}
+function update() {
+  const connected = ui && ui.connected;
+  $("send").disabled = !connected || sending || !(phase === "ready" || phase === "deployed_anchor");
+  $("send").innerHTML = sending ? '<span class="spin"></span>Ждём сеть…' : phase === "done" ? "Ключ сменён" : connected ? "Отправить" : "Подключите кошелёк";
+}
+
+$("send").onclick = async () => {
+  msg("", "");
+  try {
+    const p = await api("payload");
+    const m = {address: p.address, amount: p.amount, payload: p.payload};
+    if (p.state_init) m.stateInit = p.state_init;
+    sending = true; update();
+    await ui.sendTransaction({validUntil: p.valid_until, network: "-239", messages: [m]});
+    msg("sun", "Подписано. Ждём сеть, до 30 с.");
+  } catch (e) {
+    sending = false; update();
+    msg("red", (e && e.message) || "Транзакция отменена");
+  }
+};
+
+(async () => {
+  if (!id || !dtoken) { msg("red", "Откройте страницу из Gram Vanity."); return; }
+  try {
+    const p = await api("state");
+    $("addr").textContent = p.address.replace(/(.{4})(?=.)/g, "$1 ");
+  } catch (e) { msg("red", e.message); return; }
+  $("amount").textContent = "0,01 GRAM";
+  try {
+    const pl = await api("payload");
+    $("amount").textContent = (Number(pl.amount) / 1e9).toLocaleString("ru-RU") + " GRAM";
+    $("key").textContent = pl.new_public_key.slice(0, 10) + "…" + pl.new_public_key.slice(-6);
+  } catch (e) { $("key").textContent = "—"; }
+  if (!MANIFEST_URL) {
+    msg("red", "Нет tonconnect-manifest. Запустите с --manifest-url.");
+  } else {
+    ui = new TON_CONNECT_UI.TonConnectUI({manifestUrl: MANIFEST_URL, buttonRootId: "tc"});
+    ui.onStatusChange(update);
+    await ui.connectionRestored;
+  }
+  update(); refresh(); setInterval(refresh, 4000);
+})();
+</script>
+</body>
+</html>

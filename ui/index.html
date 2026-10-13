@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="ru" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="google" content="notranslate">
+<meta name="color-scheme" content="light dark">
+<title>Gram Vanity</title>
+<style>
+@font-face{font-family:Onest;font-weight:400;font-display:swap;src:url(/fonts/onest-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Onest;font-weight:400;font-display:swap;src:url(/fonts/onest-cyrillic-400-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Onest;font-weight:600;font-display:swap;src:url(/fonts/onest-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Onest;font-weight:600;font-display:swap;src:url(/fonts/onest-cyrillic-600-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:Onest;font-weight:700;font-display:swap;src:url(/fonts/onest-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:Onest;font-weight:700;font-display:swap;src:url(/fonts/onest-cyrillic-700-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"JetBrains Mono";font-weight:500;font-display:swap;src:url(/fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"JetBrains Mono";font-weight:500;font-display:swap;src:url(/fonts/jetbrains-mono-cyrillic-500-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"JetBrains Mono";font-weight:700;font-display:swap;src:url(/fonts/jetbrains-mono-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"JetBrains Mono";font-weight:700;font-display:swap;src:url(/fonts/jetbrains-mono-cyrillic-700-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+
+/* ===== Токены: фарфор, графит, сигнальный жёлтый ===== */
+:root{
+  --paper:#eceef1; --card:#fff; --card-2:#f5f6f8; --ink:#121418; --ink-2:#565c66; --ink-3:#8d939d; --line:#e1e4e8; --line-2:#cbcfd5;
+  --board:#16181d; --tile-a:#2b2e35; --tile-b:#24272d; --tile-ink:#eef0f3; --tile-dim:#6e747e;
+  --signal:#2b6cf6; --signal-2:#1f5de0; --signal-ink:#fff; --signal-soft:rgba(43,108,246,.12); --warn-soft:rgba(255,166,0,.15);
+  --focus:#2b6cf6; --ok:#16875a; --ok-soft:rgba(22,135,90,.1); --bad:#d43838; --bad-soft:rgba(212,56,56,.09); --warn-ink:#7a5500;
+  --shadow:0 1px 0 rgba(18,20,24,.03),0 14px 36px -22px rgba(18,20,24,.28);
+  --spring:cubic-bezier(.3,.7,.25,1); --ease:cubic-bezier(.2,.8,.2,1);
+  --sans:Onest,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0d0f12; --card:#16191e; --card-2:#1d2026; --ink:#f1f2f4; --ink-2:#a2a8b2; --ink-3:#6c727c; --line:#252930; --line-2:#343942;
+  --board:#07080a; --tile-a:#20232a; --tile-b:#1a1d22;
+  --signal:#3b7bff; --signal-2:#2b66e8; --signal-soft:rgba(59,123,255,.18); --ok:#3ccb86; --ok-soft:rgba(60,203,134,.12); --bad:#ff6b6b; --bad-soft:rgba(255,107,107,.12); --warn-ink:#ffd36b;
+  --shadow:none; color-scheme:dark;
+}}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;min-height:100dvh;overflow-x:hidden}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:disabled{cursor:default}
+::selection{background:var(--signal-soft)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px;border-radius:8px}
+[hidden]{display:none!important}
+svg{display:block}
+
+.wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px calc(124px + env(safe-area-inset-bottom))}
+
+/* ===== Шапка ===== */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 0 0}
+.brand{display:flex;align-items:center;gap:8px;font:600 16px/1 var(--sans);letter-spacing:-.01em;white-space:nowrap}
+.logo{display:block;width:22px;height:22px;filter:drop-shadow(0 2px 5px rgba(43,108,246,.4))}
+.chip{border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:500 13px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.chip i{flex:none;width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.chip.live i{background:var(--signal);animation:pulse 1.4s ease-in-out infinite}
+.chip.bad{color:var(--bad)}
+.chip:disabled{cursor:default}
+.chip:not(:disabled):active{transform:scale(.97)}
+.chip i{background:var(--signal)}
+.chip.bad i{background:var(--bad)}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(43,108,246,0)}0%{box-shadow:0 0 0 0 rgba(43,108,246,.55)}}
+
+/* ===== Герой ===== */
+.hero{margin:40px 0 26px}
+.hero h1{margin:0;font:700 clamp(34px,6.4vw,52px)/1.02 var(--sans);letter-spacing:-.045em;text-wrap:balance}
+.hero h1 span{display:block;color:var(--ink-3)}
+.hero p{max-width:52ch;margin:16px 0 0;color:var(--ink-2);font-size:16.5px;line-height:1.55;text-wrap:pretty}
+.hero--sm{margin:34px 0 22px}
+.hero--sm h1{font-size:clamp(30px,5vw,40px)}
+
+/* ===== Карточки и подписи ===== */
+.card{position:relative;margin-bottom:14px;padding:22px;border-radius:26px;background:var(--card);box-shadow:var(--shadow),inset 0 0 0 1px var(--line)}
+.label{margin:0 0 10px;font:600 14px/1.2 var(--sans);letter-spacing:-.005em;color:var(--ink-2)}
+.hint{margin:10px 2px 0;color:var(--ink-3);font-size:14px;line-height:1.45;text-wrap:pretty}
+.sub{margin:0 0 14px;color:var(--ink-2);font-size:15px;line-height:1.5;text-wrap:pretty}
+
+/* Поле шаблона */
+.field{display:flex;align-items:stretch;gap:6px;padding:7px;border-radius:20px;background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--line-2);transition:box-shadow .2s}
+.field:focus-within{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.field .uq{display:grid;place-items:center;padding:0 6px 0 10px;font:700 22px var(--mono);color:var(--ink-3)}
+.part{flex:none;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:9px 12px 10px;border-radius:14px;background:var(--card);box-shadow:0 1px 2px rgba(18,20,24,.06);cursor:text}
+.part small{font:600 12px/1 var(--sans);color:var(--ink-3)}
+.part input{width:4ch;min-width:3ch;padding:0;border:0;outline:0;background:none;font:700 var(--fs,24px)/1.2 var(--mono);color:var(--ink);caret-color:var(--signal-2)}
+.part input::placeholder{color:var(--line-2)}
+.part input:disabled{color:var(--ink-2)}
+.field .gap{flex:1;min-width:14px;align-self:center;height:6px;background:radial-gradient(circle,var(--line-2) 1.3px,transparent 1.7px) 0 50%/9px 6px repeat-x}
+.part--end{align-items:flex-end}
+.part--end input{text-align:right}
+
+.opts{display:flex;flex-wrap:wrap;gap:20px 28px;margin-top:20px}
+.chips{display:flex;gap:8px}
+.tog{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border:0;border-radius:999px;background:none;box-shadow:inset 0 0 0 1.5px var(--line-2);font:600 15px/1 var(--sans);color:var(--ink);transition:background .2s,color .2s,box-shadow .2s}
+.tog svg{width:16px;height:16px;margin-left:-4px;display:none}
+.tog[aria-pressed="true"]{background:var(--ink);color:var(--card);box-shadow:none}
+.tog[aria-pressed="true"] svg{display:block}
+.tog:not(:disabled):active{transform:scale(.97)}
+.tog:disabled{opacity:.5}
+.stepper{display:inline-flex;align-items:center;height:40px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.stepper button{width:42px;height:40px;border:0;border-radius:999px;background:none;font:400 20px/1 var(--sans);color:var(--ink)}
+.stepper button:not(:disabled):active{background:var(--card-2)}
+.stepper button:disabled{opacity:.4}
+.stepper output{min-width:30px;text-align:center;font:600 16px var(--sans);font-variant-numeric:tabular-nums}
+
+/* ===== Табло ===== */
+.board-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.board-head .label{margin:0;white-space:nowrap}
+.state{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;background:var(--card-2);font:600 13px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap}
+.state.run{background:var(--ink);color:var(--card)}
+.state.run::before{content:"";width:6px;height:6px;border-radius:50%;background:#6ea0ff;animation:pulse 1.4s ease-in-out infinite}
+.state.ok{background:var(--signal);color:var(--signal-ink)}
+.board{--sp:5px;container-type:inline-size;display:grid;grid-template-columns:repeat(5,1fr 1fr 1fr 1fr var(--sp)) repeat(4,1fr);gap:3px;padding:12px;border-radius:16px;background:var(--board);box-shadow:inset 0 2px 8px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.04)}
+.t{position:relative;display:grid;place-items:center;aspect-ratio:3/4.3;border-radius:3px;background:linear-gradient(var(--tile-a) 50%,var(--tile-b) 50%);color:var(--tile-ink);font:700 calc((100cqi - 109px)/24*1.02)/1 var(--mono);overflow:hidden;user-select:all}
+.t::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-.5px;background:rgba(0,0,0,.6)}
+.t b{display:block;font-weight:700}
+.t.f b{animation:flap .17s cubic-bezier(.5,0,.5,1)}
+@keyframes flap{0%{transform:scaleY(1)}50%{transform:scaleY(.06);opacity:.5}100%{transform:scaleY(1)}}
+.t.d{color:var(--tile-dim)}
+.sp:nth-of-type(6){display:none}
+.t.m{background:linear-gradient(var(--signal) 50%,var(--signal-2) 50%);color:var(--signal-ink)}
+.t.m::after{background:rgba(0,0,0,.25)}
+.meter{height:3px;margin:14px 2px 0;border-radius:2px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--signal-2);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
+.readout{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:1px;margin:16px 0 18px;border-radius:16px;overflow:hidden;background:var(--line);box-shadow:inset 0 0 0 1px var(--line)}
+.cell{padding:12px 14px 13px;background:var(--card)}
+.cell small{display:block;margin-bottom:4px;font:500 13px/1.2 var(--sans);color:var(--ink-3)}
+.cell b{display:block;font:600 19px/1.2 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note{margin:12px 2px 0;color:var(--ink-3);font-size:14px;line-height:1.45}
+.note:empty{display:none}
+
+/* ===== Кнопки ===== */
+.cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:56px;border:0;border-radius:18px;background:var(--signal);color:var(--signal-ink);font:600 17px/1 var(--sans);letter-spacing:-.01em;box-shadow:0 10px 24px -14px rgba(43,108,246,.9),inset 0 1px 0 rgba(255,255,255,.18);transition:transform .15s ease-out,filter .2s,opacity .2s}
+.cta:not(:disabled):hover{filter:brightness(1.06)}
+.cta:not(:disabled):active{transform:scale(.985);transition:none}
+.cta:disabled{opacity:.45}
+.cta--ink{background:var(--ink);color:var(--card);box-shadow:none}
+.cta--ghost{background:none;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.cta+.cta{margin-top:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border:0;border-radius:12px;background:var(--card-2);box-shadow:inset 0 0 0 1px var(--line);font:600 14.5px/1 var(--sans);color:var(--ink);transition:transform .15s,opacity .2s}
+.btn:not(:disabled):active{transform:scale(.97);transition:none}
+.btn:disabled{opacity:.45}
+.btn svg{width:16px;height:16px}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px}
+.spin{width:18px;height:18px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== Сообщения ===== */
+.alert{margin-top:12px;padding:12px 14px;border-radius:14px;font:500 14.5px/1.45 var(--sans);text-wrap:pretty}
+.alert--red{background:var(--bad-soft);color:var(--bad)}
+.alert--sun{background:var(--warn-soft);color:var(--warn-ink)}
+.alert--mint{background:var(--ok-soft);color:var(--ok)}
+
+/* ===== Факты ===== */
+.ink{color:var(--ink);font-weight:600}
+.facts{margin-top:28px;border-top:1px solid var(--line-2)}
+.fact{display:grid;grid-template-columns:132px 1fr;gap:6px 20px;padding:20px 0;border-bottom:1px solid var(--line)}
+.fact .label{margin:3px 0 0;color:var(--ink-3)}
+.fact h3{margin:0 0 6px;font:600 18px/1.3 var(--sans);letter-spacing:-.015em}
+.fact p{margin:0;color:var(--ink-2);font-size:15px;line-height:1.5;text-wrap:pretty}
+.foot{margin:26px 0 0;color:var(--ink-3);font:400 13px/1.6 var(--sans)}
+
+/* ===== GPU ===== */
+.pat{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pat code{font:700 20px var(--mono);color:var(--ink-3);word-break:break-all}
+.pat code b{color:var(--ink)}
+.pat-est{display:flex;align-items:center;gap:12px;color:var(--ink-2);font-size:14px}
+.pat-est b{color:var(--ink);font:600 15px var(--sans)}
+.inputs{display:flex;gap:8px}
+.inp{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding:10px 14px 11px;border-radius:14px;background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--line-2);cursor:text;transition:box-shadow .2s}
+.inp:focus-within{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.inp small{font:600 12px/1 var(--sans);color:var(--ink-3)}
+.inp input{width:100%;min-width:0;padding:0;border:0;outline:0;background:none;font:600 16px/1.3 var(--mono);color:var(--ink)}
+.inp input::placeholder,textarea::placeholder{color:var(--ink-3);opacity:.7}
+.inp--port{flex:0 0 84px}
+.code{margin-top:14px;padding:16px;border-radius:16px;background:var(--board)}
+.code pre{margin:0 0 14px;font:500 12.5px/1.65 var(--mono);color:#d4d8de;white-space:pre-wrap;word-break:break-all}
+.code .btn{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:#fff}
+.code .btn--run{background:var(--signal);box-shadow:none;color:var(--signal-ink)}
+.glog{margin-top:14px}
+.glog pre{max-height:260px;overflow:auto}
+.glog .prog{margin:0 0 10px;font:600 13px/1.5 var(--mono);color:#fff;word-break:break-all}
+textarea{display:block;width:100%;min-height:110px;resize:vertical;padding:14px 16px;border:0;border-radius:16px;background:var(--card-2);box-shadow:inset 0 0 0 1.5px var(--line-2);outline:0;font:500 15px/1.6 var(--mono);color:var(--ink);transition:box-shadow .2s}
+textarea:focus{box-shadow:inset 0 0 0 1.5px var(--ink)}
+textarea::placeholder{font-family:var(--sans)}
+textarea+.cta{margin-top:12px}
+
+/* ===== 24 слова ===== */
+.empty{padding:34px 22px;text-align:center}
+.empty .mini{display:inline-grid;grid-template-columns:repeat(6,22px);gap:3px;padding:8px;border-radius:10px;background:var(--board);margin-bottom:18px}
+.empty .mini .t{font-size:15px}
+.empty h2{margin:0 0 8px;font:600 22px/1.25 var(--sans);letter-spacing:-.02em}
+.empty p{max-width:40ch;margin:0 auto 20px;color:var(--ink-2);font-size:15px}
+.empty .row-btns{justify-content:center}
+.addr-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+.addr-line code{min-width:0;font:500 13px/1.5 var(--mono);color:var(--ink-3);overflow-wrap:anywhere}
+.pill{display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:var(--card-2);font:600 13px/1 var(--sans);color:var(--ink-2);white-space:nowrap}
+.pill--mint{background:var(--signal);color:var(--signal-ink)}
+.step{display:grid;grid-template-columns:34px 1fr;gap:14px}
+.mk{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--card);font:700 15px/1 var(--sans);transition:background .25s,color .25s}
+.mk.ok{background:var(--signal);color:var(--signal-ink)}
+.step h3{margin:5px 0 6px;font:600 18px/1.3 var(--sans);letter-spacing:-.015em}
+.step-body>p{margin:0 0 14px;color:var(--ink-2);font-size:15px;line-height:1.5;text-wrap:pretty}
+.words{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+@media (max-width:600px){.words{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:380px){.words{grid-template-columns:repeat(2,1fr)}}
+.w{position:relative;display:flex;align-items:center;gap:6px;height:40px;padding:0 10px;border-radius:10px;background:var(--card-2);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.w.sig{background:var(--signal-soft);box-shadow:inset 0 0 0 1px rgba(43,108,246,.35)}
+.w small{min-width:17px;font:500 12px var(--sans);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.w span{font:700 14.5px var(--mono);opacity:0;filter:blur(6px);transition:opacity .35s var(--ease),filter .35s var(--ease);transition-delay:calc(var(--i)*18ms)}
+.w::after{content:"";position:absolute;left:33px;right:14px;top:50%;height:7px;margin-top:-3.5px;border-radius:4px;background:var(--ink-3);opacity:.22;transition:opacity .25s;transition-delay:calc(var(--i)*18ms)}
+.w.sig::after{background:var(--signal);opacity:.45}
+.revealed .w span{opacity:1;filter:none}
+.revealed .w::after{opacity:0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 2px 14px;color:var(--ink-3);font:400 13px/1.4 var(--sans)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:9px;height:9px;border-radius:3px;background:var(--ink-3);opacity:.5}
+.legend i.v{background:var(--signal);opacity:1}
+.check{display:flex;align-items:center;gap:12px;margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--card-2);cursor:pointer;font-weight:600}
+.check input,.srow--check input{flex:none;appearance:none;-webkit-appearance:none;position:relative;width:24px;height:24px;margin:0;border-radius:7px;box-shadow:inset 0 0 0 1.5px var(--line-2);background:var(--card);cursor:pointer;transition:background .2s,box-shadow .2s}
+.check input:checked,.srow--check input:checked{background:var(--ink);box-shadow:none}
+.check input::after,.srow--check input::after{content:"";position:absolute;inset:0;background:var(--card);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 12.5 4 4 8-9' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 12.5 4 4 8-9' fill='none' stroke='black' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat;transform:scale(0);transition:transform .25s var(--spring)}
+.check input:checked::after,.srow--check input:checked::after{transform:scale(1)}
+.vault{position:relative;margin-bottom:12px}
+.vault .words{margin:0}
+.vault-cover{position:absolute;inset:-4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;border-radius:16px;background:color-mix(in srgb,var(--board) 82%,transparent);backdrop-filter:blur(3px)}
+.vault-cover .cta{width:auto;max-width:100%;height:52px;padding:0 22px;font-size:15.5px}
+.revealed+.vault-cover{display:none}
+.rows{margin-top:14px;border-radius:16px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.srow{display:flex;align-items:center;gap:12px;min-height:54px;padding:12px 16px;border-top:1px solid var(--line);color:var(--ink);font-size:15px;line-height:1.4;text-decoration:none}
+.srow:first-child{border-top:0}
+.srow>span{flex:1;min-width:0;text-wrap:pretty}
+.srow>b{flex:none;max-width:48%;font:500 13.5px/1.4 var(--mono);color:var(--ink-2);text-align:right;word-break:break-all}
+.srow code{font:600 14px var(--mono)}
+.srow--link{color:var(--signal);font-weight:600}
+.srow--link>b{margin-left:auto}
+.srow--check{cursor:pointer}
+.si{flex:none;position:relative;width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line-2)}
+.si.ok{background:var(--ok);box-shadow:none}
+.si.ok::after{content:"";position:absolute;left:9.5px;top:6px;width:5px;height:10px;border:solid #fff;border-width:0 2.4px 2.4px 0;transform:rotate(45deg)}
+.si.run{box-shadow:none;border:2.4px solid var(--signal);border-right-color:transparent;animation:spin .8s linear infinite}
+.check input:disabled{opacity:.45;cursor:default}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid var(--line)}
+.kv:first-child{border-top:0}
+.kv span{flex:none;color:var(--ink-2);font-size:15px}
+.kv b{min-width:0;font:500 13.5px/1.5 var(--mono);text-align:right;word-break:break-all}
+.kv-box{margin-top:12px;padding:2px 16px;border-radius:14px;background:var(--card-2)}
+
+/* ===== Вкладки ===== */
+.tabs{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));z-index:40;display:flex;gap:4px;padding:6px;border-radius:999px;background:#16181d;box-shadow:0 18px 44px -16px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.07);transform:translateX(-50%)}
+.tabs button{position:relative;display:flex;align-items:center;height:48px;min-width:48px;padding:0 13px;border:0;border-radius:999px;background:none;color:rgba(255,255,255,.6);transition:background .3s var(--spring),color .2s}
+.tabs button:hover{color:#fff}
+.tabs svg{flex:none;width:22px;height:22px}
+.tabs span{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;font:600 15px/1 var(--sans);transition:max-width .4s var(--spring),margin .4s var(--spring),opacity .2s}
+.tabs [aria-selected="true"]{background:var(--signal);color:var(--signal-ink)}
+.tabs [aria-selected="true"] span{max-width:110px;margin-left:8px;opacity:1}
+.tabs button:active{transform:scale(.96)}
+.tabs .dot{position:absolute;top:10px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 2px #16181d}
+.tabs [aria-selected="true"] .dot{display:none}
+.tabs :focus-visible{outline-offset:2px;border-radius:999px}
+
+.view{animation:appear .4s var(--ease) both}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}}
+.confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+
+@media (max-width:560px){
+  .wrap{padding:0 14px calc(116px + env(safe-area-inset-bottom))}
+  .hero{margin:30px 0 22px}
+  .card{padding:16px;border-radius:22px}
+  .board{grid-template-columns:repeat(3,1fr 1fr 1fr 1fr var(--sp)) repeat(4,1fr);padding:10px}
+  .sp:nth-of-type(6){display:block}
+  .sp:nth-of-type(4),.sp:nth-of-type(8){display:none}
+  .t{font-size:calc((100cqi - 69px)/16*1.02)}
+  .field .uq{padding:0 2px 0 6px;font-size:18px}
+  .part{padding:8px 10px 9px}
+  .readout{--n:2!important}
+  .readout .cell:nth-child(3):last-child{grid-column:1/-1}
+  .fact{grid-template-columns:1fr}
+  .fact .label{margin:0}
+  .step{grid-template-columns:1fr;gap:10px}
+  .step h3{margin:0}
+  .step-head{display:flex;align-items:center;gap:12px}
+  .tabs button{padding:0 12px}
+  .hide-sm{display:none}
+}
+@media (min-width:561px){.step-head{display:contents}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important;transition-delay:0s!important}}
+@media (prefers-contrast:more){.card{box-shadow:inset 0 0 0 1.5px var(--ink-3)}}
+</style>
+</head>
+<body>
+<canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img class="logo" src="data:image/webp;base64,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" width="22" height="22" alt="" aria-hidden="true">Gram Vanity</div>
+    <button class="chip" id="chip" type="button" aria-live="polite" hidden><i></i><span id="chip-t"></span></button>
+  </header>
+
+  <!-- ===== Подбор ===== -->
+  <section class="view" data-view="mine" id="v-mine" role="tabpanel" aria-labelledby="tab-mine">
+    <div class="hero">
+      <h1>Генератор красивых адресов <span>для Telegram Wallet (Money)</span></h1>
+      <p>Подбор локально или на вашем GPU. Ключ есть только у вас.</p>
+    </div>
+
+    <div class="card">
+      <p class="label">Ваш текст</p>
+      <div class="field" id="field">
+        <span class="uq">UQ</span>
+        <label class="part"><small>начало</small><input id="prefix" maxlength="10" autocomplete="off" spellcheck="false" placeholder="A…" aria-label="Начало адреса после UQ"></label>
+        <span class="gap" aria-hidden="true"></span>
+        <label class="part part--end"><small>окончание</small><input id="suffix" maxlength="10" autocomplete="off" spellcheck="false" placeholder="_Gram" aria-label="Окончание адреса"></label>
+      </div>
+      <p class="hint">Латиница, цифры, «-», «_». Начало: A–D.</p>
+      <div class="opts">
+        <div>
+          <p class="label">Регистр</p>
+          <div class="chips">
+            <button class="tog" type="button" id="ci" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Любой</button>
+            <button class="tog" type="button" id="cs" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>Точный</button>
+          </div>
+        </div>
+        <div>
+          <p class="label">Потоки CPU</p>
+          <div class="stepper"><button type="button" data-step="-1" aria-label="Меньше потоков">−</button><output id="threads">8</output><button type="button" data-step="1" aria-label="Больше потоков">+</button></div>
+        </div>
+      </div>
+      <p class="hint" id="case-hint"></p>
+    </div>
+
+    <div class="card">
+      <div class="board-head"><p class="label">Telegram Wallet · mainnet</p><span class="state" id="b-state">ожидание</span></div>
+      <div class="board" id="board" aria-label="Будущий адрес"></div>
+      <div class="meter"><i id="meter"></i></div>
+      <div class="readout" id="readout"></div>
+      <button class="cta" id="start" type="button">Подобрать локально</button>
+      <button class="cta cta--ghost" id="stop" type="button" hidden><span class="spin"></span>Остановить подбор</button>
+      <button class="cta cta--ink" id="go-words" type="button" data-go="words" hidden>Открыть 24 слова</button>
+      <p class="note" id="s-note"></p>
+      <div id="err"></div>
+    </div>
+
+    <div class="facts">
+      <div class="fact"><p class="label">1 · Подбор</p><div><h3>Слова 1–12 задают адрес</h3><p>Ищем 12 слов с нужным адресом. Каждый символ — в ~64 раза дольше. От 6 символов берите GPU.</p></div></div>
+      <div class="fact"><p class="label">2 · Ваши 24 слова</p><div><h3>Слова 13–24 создаются здесь</h3><p>Никуда не уходят. Вместе с 1–12 — ваши 24 слова.</p></div></div>
+      <div class="fact"><p class="label">3 · Смена ключа</p><div><h3>Одна транзакция, затем импорт</h3><p>Кошелёк разворачивает адрес и ставит ваш ключ. Слова 1–12 после этого бесполезны.</p></div></div>
+    </div>
+    <p class="foot">Gram Vanity · TG Wallet, subwallet 0x7FFF7F11 · только 127.0.0.1</p>
+  </section>
+
+  <!-- ===== GPU ===== -->
+  <section class="view" data-view="gpu" id="v-gpu" role="tabpanel" aria-labelledby="tab-gpu" hidden>
+    <div class="hero hero--sm">
+      <h1>GPU-сервер</h1>
+      <p>NVIDIA ищет в сотни раз быстрее. Сервер узнаёт только слова 1–12, после смены ключа они бесполезны.</p>
+    </div>
+
+    <div class="card">
+      <p class="label">Шаблон</p>
+      <div class="pat"><code id="g-pat">не задан</code><div class="pat-est">4× RTX 5090 <b id="g-est">—</b><button class="btn" type="button" data-go="mine">Изменить</button></div></div>
+    </div>
+
+    <div class="card">
+      <p class="label">Сервер</p>
+      <div class="inputs">
+        <label class="inp"><small>SSH</small><input id="ssh-host" autocomplete="off" spellcheck="false" placeholder="root@1.2.3.4 или вся команда ssh"></label>
+        <label class="inp inp--port"><small>порт</small><input id="ssh-port" inputmode="numeric" autocomplete="off" placeholder="22"></label>
+      </div>
+      <p class="hint">Нужен CUDA-образ (например nvidia/cuda:12.4.1-devel-ubuntu22.04) и доступ по SSH-ключу. Порт — SSH (-p), не из -L.</p>
+      <div class="code"><pre id="gpu-cmd"></pre><div class="row-btns"><button class="btn btn--run" id="gpu-run" type="button">Запустить</button><button class="btn" id="copy-cmd" type="button">Копировать</button></div></div>
+      <p class="hint">Программа сама зайдёт по SSH, соберёт воркер и подставит слова. Или выполните команду в терминале.</p>
+      <div class="code glog" id="gpu-log" hidden><p class="prog" id="gpu-prog"></p><pre id="gpu-out"></pre></div>
+      <div id="gpu-err"></div>
+    </div>
+
+    <div class="card">
+      <p class="label">Слова 1–12 из воркера</p>
+      <textarea id="anchor-in" autocomplete="off" spellcheck="false" placeholder="12 слов из строки «anchor» через пробел" aria-label="Слова 1–12"></textarea>
+      <button class="cta" id="use-anchor" type="button">Продолжить</button>
+      <div class="alert alert--sun">Смените ключ сразу. До этого владелец сервера может забрать адрес. Деньги в безопасности.</div>
+      <div id="g-err"></div>
+    </div>
+  </section>
+
+  <!-- ===== 24 слова ===== -->
+  <section class="view" data-view="words" id="v-words" role="tabpanel" aria-labelledby="tab-words" hidden>
+    <div class="hero hero--sm">
+      <h1>24 слова</h1>
+      <p><b class="ink">Что уходит с компьютера.</b> Слова 13–24 остаются здесь. В сеть уходят только публичный ключ и подпись.</p>
+    </div>
+
+    <div class="card empty" id="w-empty">
+      <div class="mini" aria-hidden="true"><span class="t"><b>?</b></span><span class="t"><b>?</b></span><span class="t"><b>?</b></span><span class="t m"><b>G</b></span><span class="t m"><b>m</b></span><span class="t"><b>?</b></span></div>
+      <h2>Сначала подберите адрес</h2>
+      <p>Здесь появятся 24 слова.</p>
+      <div class="row-btns"><button class="btn" type="button" data-go="mine">Локально</button><button class="btn" type="button" data-go="gpu">На GPU</button></div>
+    </div>
+
+    <div id="w-sess" hidden>
+      <div class="card">
+        <div class="board-head"><p class="label">Ваш адрес</p><span class="pill" id="rot-pill">…</span></div>
+        <div class="board" id="board2" aria-label="Новый адрес"></div>
+        <div class="addr-line"><code id="rot-addr"></code><button class="btn" id="addr-copy" type="button">Копировать</button></div>
+      </div>
+
+      <div class="card step">
+        <div class="step-head"><b class="mk" id="st1">1</b></div>
+        <div class="step-body">
+          <h3>Запишите 24 слова</h3>
+          <p>1–12 задают адрес, 13–24 — ваш ключ. Запишите все 24 по порядку.</p>
+          <div class="vault" id="vault">
+            <div class="words" id="rot-words"></div>
+            <div class="vault-cover" id="vault-cover">
+              <button class="cta" id="rot-reveal" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Показать 24 слова</button>
+            </div>
+          </div>
+          <div class="legend"><span><i></i>1–12 · задают адрес</span><span><i class="v"></i>13–24 · ваш ключ, созданы здесь</span></div>
+          <div class="row-btns" id="words-tools" hidden>
+            <button class="btn" id="rot-hide" type="button">Скрыть</button>
+            <button class="btn" id="rot-copy" type="button"><span>Скопировать 24 слова</span></button>
+          </div>
+          <div class="alert alert--sun">Слова 13–24 не восстановить. Запишите на бумагу, без скриншотов.</div>
+          <label class="check"><input type="checkbox" id="rot-ack" disabled>Я записал все 24 слова по порядку</label>
+        </div>
+      </div>
+
+      <div class="card step">
+        <div class="step-head"><b class="mk" id="st2">2</b></div>
+        <div class="step-body">
+          <h3>Смена ключа</h3>
+          <p>Одна транзакция: 0,01 GRAM, деплой и ваш ключ.</p>
+          <button class="cta" id="rot-deploy" type="button" disabled>Сменить ключ</button>
+          <div class="rows">
+            <div class="srow"><i class="si ok" id="si-proof"></i><span>Доказательство подписано словами 13–24</span><b id="rot-pub"></b></div>
+            <div class="srow"><i class="si" id="si-deploy"></i><span id="rot-deploy-t">Кошелёк развёрнут, ключ ваш</span><b id="rot-bal"></b></div>
+            <div class="srow"><span>Публичный ключ кошелька сейчас</span><b id="rot-key">—</b></div>
+            <a class="srow srow--link" id="rot-explorer" target="_blank" rel="noopener noreferrer">Проверить в эксплорере<b>›</b></a>
+          </div>
+          <p class="hint">После смены ключа слова 1–12 бесполезны.</p>
+          <div id="rot-msg"></div>
+        </div>
+      </div>
+
+      <div class="card step">
+        <div class="step-head"><b class="mk" id="st3">3</b></div>
+        <div class="step-body">
+          <h3>Импорт в Telegram</h3>
+          <p>В Telegram один кошелёк. Сначала уберите старый.</p>
+          <div class="rows">
+            <label class="srow srow--check"><span><b class="ink">Telegram → Настройки → Деньги.</b> Если там уже есть кошелёк, переведите с него все монеты или сохраните его секретную фразу.</span><input type="checkbox"></label>
+            <label class="srow srow--check"><span><b class="ink">Удалите старый кошелёк.</b> Только после этого появится импорт.</span><input type="checkbox"></label>
+            <label class="srow srow--check"><span><b class="ink">Импортируйте кошелёк:</b> введите 24 слова в показанном порядке, с 1 по 24.</span><input type="checkbox"></label>
+            <label class="srow srow--check"><span><b class="ink">Проверьте адрес:</b> он заканчивается на <code id="rot-tail"></code>. Если нет, порядок слов неверный.</span><input type="checkbox"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="label">Стереть из памяти</p>
+        <p class="hint" style="margin-top:0">Слова в памяти, пока программа работает. Записали и сменили ключ — сотрите.</p>
+        <button class="btn" id="wipe" type="button" style="margin-top:12px">Стереть</button>
+        <div id="wipe-msg"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Проверка ===== -->
+  <section class="view" data-view="verify" id="v-verify" role="tabpanel" aria-labelledby="tab-verify" hidden>
+    <div class="hero hero--sm">
+      <h1>Проверка</h1>
+      <p>Вставьте 24 слова: покажем адрес, ваш ключ и ключ в сети. Слова не уходят.</p>
+    </div>
+    <div class="card">
+      <p class="label">24 слова</p>
+      <textarea id="vwords" autocomplete="off" spellcheck="false" placeholder="Вставьте 24 слова через пробел" aria-label="24 слова"></textarea>
+      <button class="cta cta--ink" id="verify-btn" type="button">Проверить</button>
+      <div id="vout"></div>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs" role="tablist" aria-label="Разделы">
+  <button type="button" role="tab" id="tab-mine" data-tab="mine" aria-controls="v-mine" aria-selected="true" title="Подбор"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg><span>Подбор</span></button>
+  <button type="button" role="tab" id="tab-gpu" data-tab="gpu" aria-controls="v-gpu" aria-selected="false" tabindex="-1" title="GPU"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg><span>GPU</span></button>
+  <button type="button" role="tab" id="tab-words" data-tab="words" aria-controls="v-words" aria-selected="false" tabindex="-1" title="24 слова"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.6 17.4A2 2 0 0 0 2 18.8V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.2a2 2 0 0 0 1.4-.6l.8-.8a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r="1.2" fill="currentColor" stroke="none"/></svg><span>24 слова</span><i class="dot" id="words-dot" hidden></i></button>
+  <button type="button" role="tab" id="tab-verify" data-tab="verify" aria-controls="v-verify" aria-selected="false" tabindex="-1" title="Проверка"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span>Проверка</span></button>
+</nav>
+
+<script>
+"use strict";
+const token = new URLSearchParams(location.hash.slice(1)).get("t") || "";
+history.replaceState(null, "", "/");
+const $ = id => document.getElementById(id);
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const api = async (path, body) => {
+  const r = await fetch("/api/" + path, {
+    method: body === undefined ? "GET" : "POST",
+    headers: {"X-Token": token, "Content-Type": "application/json"},
+    body: body === undefined ? undefined : JSON.stringify(body),
+    cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer",
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || ("HTTP " + r.status));
+  return j;
+};
+const group4 = a => String(a).replace(/(.{4})(?=.)/g, "$1 ");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtNum = n => Math.round(n).toLocaleString("ru-RU");
+const fmtTime = s => {
+  if (!isFinite(s)) return "—";
+  if (s < 1) return "< 1 с";
+  if (s < 90) return Math.round(s) + " с";
+  if (s < 5400) return Math.round(s / 60) + " мин";
+  if (s < 172800) return (s / 3600).toFixed(1) + " ч";
+  return (s / 86400).toFixed(1) + " дн";
+};
+const plural = (n, a, b, c) => n % 10 === 1 && n % 100 !== 11 ? a : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? b : c;
+const alertHtml = (cls, t) => `<div class="alert ${cls}">${esc(t)}</div>`;
+const cell = (k, v) => `<div class="cell"><small>${k}</small><b>${v}</b></div>`;
+const kvHtml = rows => rows.map(([k, v]) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`).join("");
+const flash = (b, text) => { const l = b.querySelector("span") || b, t = l.textContent; l.textContent = text; setTimeout(() => l.textContent = t, 1300); };
+
+const GPU_RATE = 6e6; // measured: 4× RTX 5090 ≈ 6.06M/s (~1.5M/s per card)
+const SAMPLE = "UQAz7mK2xV9pLq4Rt1nW8bYc3HfJ6sD0eGkN5uTo-iMa_XvQ";
+const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+const state = {ci: false, threads: 8, maxThreads: 8, rate: 0, exp: null, job: null, dirty: false, seenRunning: false, online: true};
+let sess = null, gpu = null, sessTimer = null, phase = "", handledFound = null, boardKey = null, firstPoll = true, debounce = null, pollT = null, pollFast = null;
+
+/* ---------- tabs ---------- */
+const tabBtns = [...document.querySelectorAll("[role=tab]")];
+const views = [...document.querySelectorAll("[data-view]")];
+function setTab(t) {
+  tabBtns.forEach(b => { const on = b.dataset.tab === t; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+  views.forEach(v => v.hidden = v.dataset.view !== t);
+  if (t === "words") $("words-dot").hidden = true;
+  if (t === "mine") fit();
+  scrollTo({top: 0});
+}
+tabBtns.forEach((b, i) => {
+  b.onclick = () => setTab(b.dataset.tab);
+  b.onkeydown = e => {
+    const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!d) return;
+    const n = tabBtns[(i + d + tabBtns.length) % tabBtns.length];
+    setTab(n.dataset.tab); n.focus();
+  };
+});
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => setTab(b.dataset.go)));
+
+/* ---------- split-flap board ---------- */
+function board(el) {
+  // Groups of 4 like Telegram: a spacer cell after every 4th tile; CSS hides the ones at a row end.
+  el.innerHTML = Array.from({length: 48}, (_, i) => '<span class="t"><b></b></span>' + (i % 4 === 3 && i < 47 ? '<i class="sp"></i>' : "")).join("");
+  const tiles = [...el.querySelectorAll(".t")], chars = Array(48).fill("");
+  let mask = [], timer = null, gen = 0;
+  const flip = (i, c) => {
+    if (chars[i] === c) return;
+    chars[i] = c;
+    const t = tiles[i]; t.firstChild.textContent = c;
+    if (RM) return;
+    t.classList.remove("f"); void t.offsetWidth; t.classList.add("f");
+  };
+  return {
+    set(addr, m, wave) {
+      mask = m; const g = ++gen;
+      tiles.forEach((t, i) => {
+        t.classList.toggle("d", i < 2); t.classList.toggle("m", !!m[i]);
+        const c = addr[i] || "";
+        if (wave && !RM) setTimeout(() => g === gen && flip(i, c), i * 16); else flip(i, c);
+      });
+    },
+    scramble(on) {
+      if (on && !timer && !RM) timer = setInterval(() => {
+        for (let k = 0; k < 5; k++) { const i = 2 + (Math.random() * 46 | 0); if (!mask[i]) flip(i, B64[Math.random() * 64 | 0]); }
+      }, 90);
+      if (!on && timer) { clearInterval(timer); timer = null; }
+    },
+  };
+}
+const maskFor = (p, s) => Array.from({length: 48}, (_, i) => (i >= 2 && i < 2 + p) || i >= 48 - s ? 1 : 0);
+const previewAddr = (p, s) => "UQ" + p + SAMPLE.slice(2 + p.length, 48 - s.length) + s;
+const mainBoard = board($("board")), wordsBoard = board($("board2"));
+
+/* ---------- pattern + estimate ---------- */
+const pattern = () => ({prefix: $("prefix").value.trim(), suffix: $("suffix").value.trim(), case_insensitive: state.ci});
+function showPattern() {
+  const {prefix: p, suffix: s} = pattern();
+  mainBoard.set(previewAddr(p, s), maskFor(p.length, s.length));
+  caseHint(); gpuCmd(); gpuInfo();
+}
+function onPattern() {
+  state.dirty = true; boardKey = null;
+  showPattern(); render();
+  clearTimeout(debounce); debounce = setTimeout(estimate, 180);
+}
+async function estimate() {
+  const pt = pattern(), n = pt.prefix.length + pt.suffix.length;
+  $("err").innerHTML = ""; state.exp = null;
+  if (n) {
+    try { state.exp = (await api("estimate", pt)).expected_attempts; }
+    catch (e) { $("err").innerHTML = alertHtml("alert--red", e.message); }
+  }
+  render(); gpuInfo();
+}
+function caseHint() {
+  const {prefix, suffix} = pattern(), t = suffix || prefix || "gram";
+  const v = [...new Set([t.toLowerCase(), t[0].toUpperCase() + t.slice(1).toLowerCase(), t.toUpperCase()])];
+  $("case-hint").textContent = v.length === 1 ? "В тексте нет букв: регистр не влияет на поиск."
+    : state.ci ? `${v.map(x => "«" + x + "»").join(", ")} — подойдёт любой. Поиск быстрее.`
+    : `Только «${t}» буква в букву. Поиск дольше.`;
+}
+function setCase(ci) { state.ci = ci; $("ci").setAttribute("aria-pressed", ci); $("cs").setAttribute("aria-pressed", !ci); onPattern(); }
+$("ci").onclick = () => setCase(true);
+$("cs").onclick = () => setCase(false);
+document.querySelectorAll("[data-step]").forEach(b => b.onclick = () => {
+  state.threads = Math.min(state.maxThreads * 2, Math.max(1, state.threads + +b.dataset.step));
+  $("threads").textContent = state.threads;
+});
+const fitLen = el => Math.max(el.value.length, el.placeholder.length, 2) + 1;
+// Inputs grow with the text; when both do not fit, the font shrinks instead of the text scrolling away.
+function fit() {
+  const f = $("field"), a = $("prefix"), b = $("suffix");
+  a.style.width = fitLen(a) + "ch"; b.style.width = fitLen(b) + "ch";
+  const parts = [...f.querySelectorAll(".part")], pad = parts.reduce((n, p) => n + p.offsetWidth - p.querySelector("input").offsetWidth, 0);
+  const avail = f.clientWidth - 14 - f.querySelector(".uq").offsetWidth - 18 - 14 - pad;
+  const fs = Math.max(13, Math.min(24, avail / ((fitLen(a) + fitLen(b)) * 0.6)));
+  f.style.setProperty("--fs", fs.toFixed(1) + "px");
+}
+addEventListener("resize", () => { if (!$("v-mine").hidden) fit(); });
+["prefix", "suffix"].forEach(id => {
+  const el = $(id);
+  el.addEventListener("input", () => { fit(); onPattern(); });
+  el.addEventListener("keydown", e => { if (e.key === "Enter" && !$("start").hidden && !$("start").disabled) $("start").click(); });
+});
+
+/* ---------- render search card ---------- */
+function render() {
+  const j = state.job, live = j && !state.dirty, {prefix: p, suffix: s} = pattern(), n = p.length + s.length;
+  let label, cls = "", meter = 0, cells, note = "";
+  if (live && j.running) {
+    const ch = 1 - Math.exp(-j.attempts / j.expected_attempts);
+    label = `подбор · ${Math.min(99, Math.floor(ch * 100))}%`; cls = "run"; meter = ch;
+    cells = cell("Попыток", fmtNum(j.attempts)) + cell("Скорость", fmtNum(j.rate) + "/с") + cell("Прошло", fmtTime(j.elapsed)) + cell("Прогноз", fmtTime(j.expected_attempts / (j.rate || 1)));
+    note = `Ищу UQ${j.prefix}…${j.suffix}${j.case_insensitive ? " в любом регистре" : ""} на ${j.threads} ${plural(j.threads, "потоке", "потоках", "потоках")}. Время случайно.`;
+  } else if (live && j.found) {
+    label = "найден"; cls = "ok"; meter = 1;
+    cells = cell("Попыток", fmtNum(j.found.attempts)) + cell("Прошло", fmtTime(j.elapsed)) + cell("Скорость", fmtNum(j.rate) + "/с");
+    note = "Найден. Откройте 24 слова и смените ключ.";
+  } else if (live) {
+    label = "остановлен";
+    cells = cell("Попыток", fmtNum(j.attempts)) + cell("Прошло", fmtTime(j.elapsed)) + cell("Скорость", fmtNum(j.rate) + "/с");
+    note = "Остановлен. Новый запуск ничего не теряет.";
+  } else {
+    label = n ? `${n} ${plural(n, "символ", "символа", "символов")} · ${state.ci ? "любой" : "точный"}` : "ожидание";
+    const e = state.exp;
+    cells = cell("В среднем", e ? fmtNum(e) : "—")
+      + cell("Локально", e ? (state.rate ? fmtTime(e / state.rate) : "после запуска") : "—")
+      + cell("4× RTX 5090", e ? "≈ " + fmtTime(e / GPU_RATE) : "—");
+    note = n ? "" : "Введите начало или конец адреса.";
+  }
+  $("b-state").textContent = label; $("b-state").className = "state " + cls;
+  $("meter").style.transform = `scaleX(${meter})`;
+  $("readout").innerHTML = cells; const nc = (cells.match(/class="cell"/g) || []).length; $("readout").style.setProperty("--n", nc); $("readout").classList.toggle("four", nc === 4); $("s-note").textContent = note;
+  const running = !!(live && j.running);
+  $("start").hidden = running; $("stop").hidden = !running;
+  $("start").disabled = !n || !token || !state.online;
+  $("start").className = "cta" + (live && j.found ? " cta--ghost" : "");
+  $("start").textContent = live && j.found ? "Подобрать заново" : "Подобрать локально";
+  $("go-words").hidden = !sess;
+  ["prefix", "suffix", "ci", "cs"].forEach(id => $(id).disabled = running);
+  document.querySelectorAll("[data-step]").forEach(b => b.disabled = running);
+  mainBoard.scramble(running);
+  chip();
+}
+// Header status: shown only when there is something to act on; a tap opens the matching tab.
+function chip() {
+  const c = $("chip"), j = state.job, run = !!(j && j.running);
+  let text = "", go = "";
+  if (!state.online) text = "Нет связи с программой";
+  else if (run) { text = `Подбор · ${Math.min(99, Math.floor((1 - Math.exp(-j.attempts / j.expected_attempts)) * 100))}%`; go = "mine"; }
+  else if (gpu && gpu.running) { text = "Подбор на GPU-сервере"; go = "gpu"; }
+  else if (sess && phase !== "done" && $("v-words").hidden) { text = "Адрес найден · 24 слова"; go = "words"; }
+  c.hidden = !text; c.dataset.go = go; c.disabled = !go;
+  c.classList.toggle("bad", !state.online); c.classList.toggle("live", state.online && (run || !!(gpu && gpu.running)));
+  $("chip-t").textContent = text;
+}
+$("chip").onclick = () => { if ($("chip").dataset.go) { setTab($("chip").dataset.go); chip(); } };
+
+/* ---------- CPU search ---------- */
+function schedule(fast) {
+  if (fast === pollFast) return;
+  pollFast = fast; clearInterval(pollT); pollT = setInterval(poll, fast ? 1000 : 4000);
+}
+async function poll() {
+  let job;
+  try { ({job} = await api("status")); state.online = true; }
+  catch (e) { state.online = false; render(); schedule(false); return; }
+  state.job = job;
+  if (firstPoll) {
+    firstPoll = false;
+    if (job && !$("prefix").value && !$("suffix").value) {
+      $("prefix").value = job.prefix; $("suffix").value = job.suffix; fit();
+      state.ci = job.case_insensitive; $("ci").setAttribute("aria-pressed", state.ci); $("cs").setAttribute("aria-pressed", !state.ci);
+      showPattern(); estimate();
+    }
+  }
+  if (job) {
+    if (job.running) state.seenRunning = true;
+    if (job.rate > 0) state.rate = job.rate;
+    if (!state.dirty) {
+      const key = job.found ? job.found.address : job.prefix + "|" + job.suffix;
+      if (key !== boardKey) {
+        boardKey = key;
+        const m = maskFor(job.prefix.length, job.suffix.length);
+        if (job.found) mainBoard.set(job.found.address, m, true); else mainBoard.set(previewAddr(job.prefix, job.suffix), m);
+      }
+    }
+    if (job.found && handledFound !== job.found.address) {
+      handledFound = job.found.address;
+      if (state.seenRunning) confetti();
+      startSession(job.found.anchor_words, $("err"), state.seenRunning);
+    }
+  }
+  render();
+  schedule(!!(job && job.running));
+}
+$("start").onclick = async () => {
+  $("err").innerHTML = "";
+  try {
+    await api("start", {...pattern(), threads: state.threads});
+    state.dirty = false; boardKey = null; state.seenRunning = true; handledFound = null;
+    await poll();
+  } catch (e) { $("err").innerHTML = alertHtml("alert--red", e.message); }
+};
+$("stop").onclick = async () => { await api("stop", {}).catch(() => {}); poll(); };
+
+/* ---------- GPU ---------- */
+function gpuInfo() {
+  const {prefix: p, suffix: s} = pattern();
+  $("g-pat").innerHTML = p || s ? `UQ<b>${esc(p)}</b>…<b>${esc(s)}</b>` : "не задан";
+  $("g-est").textContent = state.exp ? "≈ " + fmtTime(state.exp / GPU_RATE) : "—";
+}
+const SSH_RE = /^[A-Za-z0-9._-]+@[A-Za-z0-9.:_\[\]-]+$|^[A-Za-z0-9.:_\[\]-]+$/;
+function gpuCmd() {
+  const {prefix, suffix, case_insensitive} = pattern();
+  const host = $("ssh-host").value.trim(), port = $("ssh-port").value.trim();
+  const args = [prefix && `--prefix ${prefix}`, suffix && `--suffix ${suffix}`, case_insensitive && "--ci"].filter(Boolean).join(" ");
+  const hostOk = SSH_RE.test(host), portOk = !port || /^\d{1,5}$/.test(port);
+  // Same rules as the server: only address chars, so nothing can break the shell quoting.
+  const patOk = /^[A-Za-z0-9_-]{0,10}$/.test(prefix + suffix) && (!prefix || (case_insensitive ? /^[A-Da-d]/ : /^[A-D]/).test(prefix));
+  const target = hostOk ? host : "USER@HOST";
+  const remote = [
+    "set -e",
+    'export PATH="$PATH:/usr/local/cuda/bin"',
+    'S=$([ "$(id -u)" = 0 ] || echo sudo)',
+    "command -v make >/dev/null && command -v g++ >/dev/null || { $S apt-get update -qq && $S apt-get install -y -qq build-essential >/dev/null; }",
+    "command -v nvcc >/dev/null || { echo \"nvcc not found: use a CUDA devel image\"; exit 1; }",
+    "mkdir -p ~/vanity-worker && cd ~/vanity-worker && tar xzf -",
+    "make -s",
+    `./vanity-worker ${patOk && args ? args : "--suffix _Gram"}`,
+  ].join("; ");
+  const cmd = `curl -sf http://${location.host}/worker.tar.gz | ssh ${port && port !== "22" ? `-p ${port} ` : ""}${target} '${remote}'`;
+  $("gpu-cmd").textContent = cmd;
+  const ready = hostOk && portOk && patOk && !!(prefix || suffix);
+  $("copy-cmd").disabled = !ready;
+  $("copy-cmd").textContent = !(prefix || suffix) ? "Задайте шаблон" : !patOk ? "Проверьте шаблон" : !hostOk ? "Введите SSH" : !portOk ? "Проверьте порт" : "Копировать";
+  const run = !!(gpu && gpu.running);
+  $("gpu-run").textContent = run ? "Остановить" : "Запустить";
+  $("gpu-run").disabled = !run && (!ready || !token || !state.online);
+  ["ssh-host", "ssh-port"].forEach(id => $(id).disabled = run);
+}
+$("copy-cmd").onclick = async () => { await navigator.clipboard.writeText($("gpu-cmd").textContent); $("copy-cmd").textContent = "Скопировано"; setTimeout(gpuCmd, 1300); };
+// A pasted "ssh -p PORT user@host -L ..." command: take user@host and -p, drop other options.
+function parseSshCmd() {
+  const v = $("ssh-host").value.trim();
+  if (!/\s/.test(v)) return;
+  const t = v.split(/\s+/);
+  let host = "", port = "";
+  for (let i = t[0] === "ssh" ? 1 : 0; i < t.length; i++) {
+    const m = /^-p(\d*)$/.exec(t[i]);
+    if (m) { port = m[1] || t[++i] || ""; continue; }
+    if (/^-[46AaCfGgKkMNnqsTtVvXxYy]+$/.test(t[i])) continue; // flags without a value
+    if (/^-/.test(t[i])) { i++; continue; } // -L 8080:..., -i key, -o opt: skip the value
+    if (!host) host = t[i];
+  }
+  if (!SSH_RE.test(host)) return;
+  $("ssh-host").value = host;
+  $("ssh-port").value = /^\d{1,5}$/.test(port) ? port : "";
+}
+["ssh-host", "ssh-port"].forEach(id => $(id).addEventListener("input", () => {
+  if (id === "ssh-host") parseSshCmd();
+  gpuCmd();
+  try { localStorage.setItem("vl-ssh", JSON.stringify({h: $("ssh-host").value, p: $("ssh-port").value})); } catch (e) {}
+}));
+try { const v = JSON.parse(localStorage.getItem("vl-ssh") || "{}"); $("ssh-host").value = v.h || ""; $("ssh-port").value = v.p || ""; } catch (e) {}
+/* GPU worker over SSH, run by the local program */
+let gpuTimer = null, gpuFound = null;
+async function gpuPoll() {
+  try { ({gpu} = await api("gpu/status")); } catch (e) { return; }
+  clearTimeout(gpuTimer);
+  if (!gpu) { $("gpu-log").hidden = true; gpuCmd(); chip(); return; }
+  $("gpu-log").hidden = false;
+  const head = gpu.running ? `${gpu.target} · UQ${gpu.prefix}…${gpu.suffix} · ${fmtTime(gpu.elapsed)}` : gpu.exit || "";
+  $("gpu-prog").textContent = head + (gpu.progress ? "\n" + gpu.progress : "");
+  const out = $("gpu-out"), stick = out.scrollTop + out.clientHeight >= out.scrollHeight - 4;
+  out.textContent = gpu.log.join("\n");
+  if (stick) out.scrollTop = out.scrollHeight;
+  if (gpu.found && gpuFound !== gpu.found.address) {
+    gpuFound = gpu.found.address;
+    $("anchor-in").value = gpu.found.anchor_words;
+    confetti();
+    startSession(gpu.found.anchor_words, $("g-err"), !$("v-gpu").hidden);
+  }
+  gpuCmd(); chip();
+  if (gpu.running) gpuTimer = setTimeout(gpuPoll, 1500);
+}
+$("gpu-run").onclick = async () => {
+  $("gpu-err").innerHTML = "";
+  try {
+    if (gpu && gpu.running) await api("gpu/stop", {});
+    else {
+      const port = $("ssh-port").value.trim();
+      await api("gpu/start", {...pattern(), host: $("ssh-host").value.trim(), port: port ? +port : null});
+    }
+  } catch (e) { $("gpu-err").innerHTML = alertHtml("alert--red", e.message); }
+  gpuPoll();
+};
+$("use-anchor").onclick = () => startSession($("anchor-in").value, $("g-err"), true);
+
+/* ---------- 24 words + key change ---------- */
+const wordCards = (words, from, cls) => words.split(" ").map((w, j) =>
+  `<div class="w ${cls}" style="--i:${from + j}"><small>${from + j + 1}</small><span>${esc(w)}</span></div>`).join("");
+async function startSession(words, errEl, jump) {
+  errEl.innerHTML = "";
+  try { sess = await api("session", {words}); }
+  catch (e) { errEl.innerHTML = alertHtml("alert--red", e.message); return; }
+  const {prefix, suffix} = pattern();
+  const ok = (!prefix || sess.address.slice(2).toLowerCase().startsWith(prefix.toLowerCase())) && (!suffix || sess.address.toLowerCase().endsWith(suffix.toLowerCase()));
+  $("w-empty").hidden = true; $("w-sess").hidden = false;
+  if (jump) setTab("words"); else $("words-dot").hidden = false;
+  wordsBoard.set(sess.address, ok ? maskFor(prefix.length, suffix.length) : [], true);
+  $("rot-addr").textContent = group4(sess.address);
+  $("rot-words").innerHTML = wordCards(sess.anchor_words, 0, "") + wordCards(sess.signing_words, 12, "sig");
+  setRevealed(false);
+  $("rot-ack").checked = false; $("rot-msg").innerHTML = ""; phase = "";
+  const pk = sess.new_public_key;
+  $("rot-pub").textContent = pk.slice(0, 4) + "…" + pk.slice(-4);
+  $("rot-tail").textContent = "…" + sess.address.slice(-Math.max(8, suffix.length + 4));
+  $("rot-explorer").href = "https://tonscan.org/address/" + encodeURIComponent(sess.address);
+  $("rot-key").textContent = "—"; $("rot-bal").textContent = "";
+  if (!ok && (prefix || suffix)) $("rot-msg").innerHTML = alertHtml("alert--sun", "Адрес не совпадает с шаблоном. Проверьте слова.");
+  rotUi(); render();
+  clearInterval(sessTimer); sessState(); sessTimer = setInterval(sessState, 4000);
+}
+function rotUi() {
+  const ack = $("rot-ack").checked, done = phase === "done";
+  const mark = (id, on, n) => { $(id).className = "mk" + (on ? " ok" : ""); $(id).textContent = on ? "✓" : n; };
+  mark("st1", ack, "1"); mark("st2", done, "2"); mark("st3", false, "3");
+  $("rot-deploy").disabled = !ack || done || phase === "foreign";
+  $("rot-deploy").textContent = done ? "Ключ сменён" : "Сменить ключ";
+  $("si-deploy").className = "si" + (done ? " ok" : ack && phase !== "foreign" ? " run" : "");
+  $("rot-deploy-t").textContent = done ? "Кошелёк развёрнут, ключ ваш" : phase === "deployed_anchor" ? "Кошелёк развёрнут, ключ ещё не ваш" : "Развернуть кошелёк и поставить ваш ключ";
+  chip();
+}
+async function sessState() {
+  if (!sess) return;
+  try {
+    const r = await api("session/state", {id: sess.id});
+    if (r.network_error) { $("rot-key").textContent = "нет связи с toncenter"; return; }
+    const prev = phase; phase = r.phase;
+    const bal = Number(r.balance) / 1e9;
+    $("rot-bal").textContent = bal ? bal.toLocaleString("ru-RU", {maximumFractionDigits: 4}) + " GRAM" : "";
+    $("rot-key").textContent = {ready: "не развёрнут", deployed_anchor: "пока ключ слов 1–12", done: "совпадает с вашими 24 словами ✓", foreign: "чужой ключ"}[phase];
+    $("rot-key").style.color = phase === "done" ? "var(--ok)" : phase === "foreign" ? "var(--bad)" : "";
+    const [t, c] = {ready: ["ждёт смены ключа", ""], deployed_anchor: ["ждёт смены ключа", ""], done: ["адрес ваш", " pill--mint"], foreign: ["чужой ключ", ""]}[phase];
+    $("rot-pill").textContent = t; $("rot-pill").className = "pill" + c;
+    if (phase === "done") {
+      $("rot-msg").innerHTML = alertHtml("alert--mint", "Ключ сменён. Импортируйте 24 слова в Telegram.");
+      if (prev && prev !== "done") confetti();
+      clearInterval(sessTimer);
+    } else if (phase === "foreign") {
+      $("rot-msg").innerHTML = alertHtml("alert--red", "Ключ адреса не от этих слов. Меняли раньше — берите те 24 слова. Иначе адрес не ваш.");
+      clearInterval(sessTimer);
+    }
+    rotUi();
+  } catch (e) { $("rot-key").textContent = e.message; }
+}
+$("rot-ack").onchange = rotUi;
+function setRevealed(on) {
+  $("rot-words").classList.toggle("revealed", on);
+  $("words-tools").hidden = !on;
+  if (on) $("rot-ack").disabled = false;
+  else if (!$("rot-ack").checked) $("rot-ack").disabled = true;
+}
+$("rot-reveal").onclick = () => setRevealed(true);
+$("rot-hide").onclick = () => setRevealed(false);
+let clipTimer = null, clipText = null;
+// Clear the clipboard if it still holds the words (or if we cannot check).
+async function clearClip() {
+  clearTimeout(clipTimer);
+  if (!clipText) return;
+  try { if ((await navigator.clipboard.readText()) !== clipText) { clipText = null; return; } } catch (e) {}
+  try { await navigator.clipboard.writeText(""); clipText = null; } catch (e) {}
+}
+$("rot-copy").onclick = async () => {
+  clipText = sess.anchor_words + " " + sess.signing_words;
+  await navigator.clipboard.writeText(clipText);
+  flash($("rot-copy"), "Скопировано, очищу через 60 с");
+  clearTimeout(clipTimer); clipTimer = setTimeout(clearClip, 60000);
+};
+$("wipe").onclick = async () => {
+  $("wipe-msg").innerHTML = "";
+  if (!confirm("Стереть 24 слова из памяти программы? Восстановить их будет нельзя. Сначала запишите слова.")) return;
+  try { await api("clear", {}); }
+  catch (e) { $("wipe-msg").innerHTML = alertHtml("alert--red", e.message); return; }
+  gpuPoll();
+  await clearClip();
+  clearInterval(sessTimer); sess = null; phase = "";
+  $("rot-words").innerHTML = ""; $("rot-addr").textContent = ""; $("anchor-in").value = ""; $("vwords").value = ""; $("vout").innerHTML = "";
+  $("w-sess").hidden = true; $("w-empty").hidden = false;
+};
+$("addr-copy").onclick = async () => { await navigator.clipboard.writeText(sess.address); flash($("addr-copy"), "Скопировано"); };
+$("rot-deploy").onclick = () => { window.open(sess.deploy_url, "_blank", "noopener"); };
+
+/* ---------- verify ---------- */
+$("verify-btn").onclick = async () => {
+  try {
+    const r = await api("verify", {words: $("vwords").value});
+    const st = r.onchain_key == null ? "не развёрнут или нет связи" : r.onchain_key === r.public_key ? "совпадает с 13–24 ✓" : "НЕ совпадает с 13–24";
+    $("vout").innerHTML = `<div class="kv-box">${kvHtml([
+      ["Адрес", esc(group4(r.address))],
+      ["Ключ из 13–24", `${esc(r.public_key.slice(0, 10))}…${esc(r.public_key.slice(-6))}`],
+      ["Ключ в сети", esc(st)],
+    ])}</div>`;
+  } catch (e) { $("vout").innerHTML = alertHtml("alert--red", e.message); }
+};
+
+/* ---------- confetti ---------- */
+function confetti() {
+  if (RM) return;
+  const c = $("confetti"), x = c.getContext("2d"), dpr = Math.min(2, devicePixelRatio || 1);
+  const W = innerWidth, H = innerHeight; c.width = W * dpr; c.height = H * dpr; x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const colors = ["#2b6cf6", "#5b8fff", "#9dbcff", "#16181d", "#1f5de0", "#ffffff"];
+  const ps = Array.from({length: 150}, () => {
+    const a = -Math.PI / 2 + (Math.random() - .5) * 1.5, v = 8 + Math.random() * 9;
+    return {x: W / 2 + (Math.random() - .5) * 140, y: H * .38, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6, vr: (Math.random() - .5) * .3, w: 5 + Math.random() * 6, h: 3 + Math.random() * 4, c: colors[Math.random() * colors.length | 0]};
+  });
+  const t0 = performance.now();
+  (function frame(t) {
+    const s = (t - t0) / 1000; x.clearRect(0, 0, W, H);
+    for (const p of ps) {
+      p.vy += .28; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.globalAlpha = Math.max(0, 1 - Math.max(0, s - 1.6) / .8);
+      x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore();
+    }
+    if (s < 2.6) requestAnimationFrame(frame); else x.clearRect(0, 0, W, H);
+  })(t0);
+}
+
+(async () => {
+  fit(); showPattern(); render();
+  if (!token) { state.online = false; $("err").innerHTML = alertHtml("alert--red", "Нет токена. Откройте ссылку из терминала."); render(); return; }
+  try { const i = await api("info"); state.threads = state.maxThreads = i.threads; $("threads").textContent = i.threads; }
+  catch (e) { $("err").innerHTML = alertHtml("alert--red", e.message); }
+  render(); poll(); gpuPoll();
+})();
+</script>
+</body>
+</html>
