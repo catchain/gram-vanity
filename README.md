@@ -4,8 +4,6 @@ A vanity address for your Telegram Wallet (Money): `UQ…_Gram`, `UQDurov…`, a
 
 The search runs on your computer or your own GPU server. You get **24 words** and import them into Telegram. Only you know the key.
 
-Same scheme as [vanity.tg](https://vanity.tg) (TG Wallet contract, 24 words, one key change). The difference: the key change goes from **your own wallet**, and everything runs locally.
-
 ## How it works
 
 1. **Search.** Find 12 BIP39 words (1–12) whose address contains your text. Each character makes the search ~64× longer.
