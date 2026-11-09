@@ -24,7 +24,7 @@ Telegram keeps one wallet.
 
 ## Run
 
-Needs [Rust](https://rustup.rs) 1.85+.
+Needs [Rust](https://rustup.rs) 1.66+.
 
 ```bash
 git clone https://github.com/catchain/gram-vanity
